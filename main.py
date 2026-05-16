@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 import httpx
+from bs4 import BeautifulSoup #for web scrapping
 
 # Initialize the FastAPI app
 app = FastAPI(
@@ -93,6 +94,35 @@ async def get_leetcode_stats(username:str):
         "easy_solved": easy_solved,
         "medium_solved": medium_solved,
         "hard_solved": hard_solved
-    }  
+    } 
+
+#codechef endpoint
+@app.get("/api/codechef/{username}")
+async def get_codechef_stats(username:str):
+    url = f"https://www.codechef.com/users/{username}"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+
+    if response.status_code !=200:
+        raise HTTPException(status_code=404, detail="CodeChef User not found")
+
+    soup = BeautifulSoup(response.text,"html.parser")
+
+    rating_div = soup.find("div", class_="rating-number")
+
+    if not rating_div:
+        current_rating = "Unrated"
+
+    current_rating = rating_div.text.strip()
+
+    return {
+        "platform": "CodeChef",
+        "username":username,
+        "current_rating":current_rating
+    }
+
+
+
 
     
