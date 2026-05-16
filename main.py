@@ -36,6 +36,7 @@ async def get_github_stats(username:str):
         "profile_url":data.get("html_url")
      }
 
+
 #leetcode endpoint
 @app.get("/api/leetcode/{username}")
 async def get_leetcode_stats(username:str):
@@ -43,6 +44,9 @@ async def get_leetcode_stats(username:str):
     graphql_query = """
     query ($username:String!){
         matchedUser(username: $username){
+            profile {
+                ranking
+            }
             submitStats{
                 acSubmissionNum{
                     difficulty
@@ -69,15 +73,26 @@ async def get_leetcode_stats(username:str):
     if not user_data:
         raise HTTPException(status_code=404, detail="LeetCode user not found")
 
-    #if user exists
-    submissions = user_data.get("submitStats",{}).get("acSubmissionNum",[])  
+    # Grab the ranking from the new profile section
+    ranking = user_data.get("profile", {}).get("ranking", 0)
 
-    total_solved = submissions[0].get("count") if len(submissions)>0 else 0
+    submissions = user_data.get("submitStats",{}).get("acSubmissionNum",[])
 
-    return{
-        "platform":"LeetCode",
-        "username":username,
-        "total_solved":total_solved
-    }      
+    # Grab the Easy, Medium, and Hard counts from the array
+    # Index 0 is All, 1 is Easy, 2 is Medium, 3 is Hard
+    total_solved = submissions[0].get("count") if len(submissions) > 0 else 0
+    easy_solved = submissions[1].get("count") if len(submissions) > 1 else 0
+    medium_solved = submissions[2].get("count") if len(submissions) > 2 else 0
+    hard_solved = submissions[3].get("count") if len(submissions) > 3 else 0 # for the safety net as new user with zero will have empty [] return by the leetcode api
+
+    return {
+        "platform": "LeetCode",
+        "username": username,
+        "ranking": ranking,
+        "total_solved": total_solved,
+        "easy_solved": easy_solved,
+        "medium_solved": medium_solved,
+        "hard_solved": hard_solved
+    }  
 
     
