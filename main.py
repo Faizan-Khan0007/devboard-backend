@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
 from bs4 import BeautifulSoup #for web scrapping
 
@@ -9,6 +10,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],# allows any frontend to connect
+    allow_credentials = True,
+    allow_methods=["*"],# allows get/post etc
+    allow_headers=["*"],
+)
 # Define your first endpoint
 @app.get("/")
 async def root():
@@ -21,7 +29,7 @@ async def root():
 @app.get("/api/github/{username}")
 async def get_github_stats(username:str):
     url = f"https://api.github.com/users/{username}"
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.get(url)
 
     if response.status_code != 200:

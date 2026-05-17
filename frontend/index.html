@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My DevBoard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <h1>Developer Stats</h1>
+            <p class="subtitle">Real-time data aggregation</p>
+        </header>
+        <div class="search-section">
+            <div class="input-group">
+                <input type="text" id="github-input" placeholder="GitHub Username" value="Faizan-Khan0007">
+                <input type="text" id="leetcode-input" placeholder="LeetCode Username" value="code_demon">
+                <input type="text" id="codechef-input" placeholder="CodeChef Username" value="Fkwarrior21">
+            </div>
+            <button onclick="fetchAllData()" class="search-btn">Fetch Live Stats</button>
+        </div>
+        <div class="cards-grid">
+            
+            <div class="card">
+                <h2>GitHub</h2>
+                <div class="stat-row">
+                    <span>Public Repos:</span>
+                    <span id="github-repos" class="highlight">--</span>
+                </div>
+                <div class="stat-row">
+                    <span>Followers:</span>
+                    <span id="github-followers" class="highlight">--</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>LeetCode</h2>
+                <div class="stat-row">
+                    <span>Global Rank:</span>
+                    <span id="leetcode-rank" class="highlight">--</span>
+                </div>
+                <div class="stat-row">
+                    <span>Total Solved:</span>
+                    <span id="leetcode-solved" class="highlight">--</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>CodeChef</h2>
+                <div class="stat-row">
+                    <span>Current Rating:</span>
+                    <span id="codechef-rating" class="highlight">--</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
